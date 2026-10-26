@@ -1,0 +1,6 @@
+/.env
+/.npm-cache/
+api/node_modules/
+api/.npm-cache/
+api/.env
+api/.env.*.local

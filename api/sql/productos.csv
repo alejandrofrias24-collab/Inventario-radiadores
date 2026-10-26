@@ -1,0 +1,26 @@
+codigo,nombre,descripcion,marca,modelo,vehiculo,anioDesde,anioHasta,precio,stock
+RAD001,Radiador Toyota Corolla,Radiador aluminio alta eficiencia,Toyota,Corolla,Sedán,2010,2015,8500.00,15
+RAD002,Radiador Toyota Corolla,Radiador aluminio alta eficiencia,Toyota,Corolla,Sedán,2016,2020,9200.00,12
+RAD003,Radiador Honda Civic,Radiador original compatible,Honda,Civic,Sedán,2012,2015,8900.00,10
+RAD004,Radiador Honda Civic,Radiador premium aluminio,Honda,Civic,Sedán,2016,2021,9800.00,8
+RAD005,Radiador Nissan Sentra,Radiador de enfriamiento estándar,Nissan,Sentra,Sedán,2013,2017,7800.00,20
+RAD006,Radiador Nissan Sentra,Radiador reforzado,Nissan,Sentra,Sedán,2018,2022,9500.00,14
+RAD007,Radiador Hyundai Elantra,Radiador de aluminio,Hyundai,Elantra,Sedán,2011,2015,8200.00,11
+RAD008,Radiador Hyundai Elantra,Radiador premium,Hyundai,Elantra,Sedán,2016,2020,9600.00,9
+RAD009,Radiador Kia Rio,Radiador estándar,Kia,Rio,Sedán,2012,2016,7300.00,18
+RAD010,Radiador Kia Rio,Radiador alta capacidad,Kia,Rio,Sedán,2017,2022,8700.00,13
+RAD011,Radiador Ford Focus,Radiador de aluminio reforzado,Ford,Focus,Sedán,2010,2014,8100.00,15
+RAD012,Radiador Ford Focus,Radiador original,Ford,Focus,Sedán,2015,2018,9400.00,10
+RAD013,Radiador Chevrolet Cruze,Radiador de alta eficiencia,Chevrolet,Cruze,Sedán,2012,2016,8600.00,12
+RAD014,Radiador Chevrolet Cruze,Radiador premium,Chevrolet,Cruze,Sedán,2017,2021,9800.00,8
+RAD015,Radiador Mazda 3,Radiador original,Mazda,3,Sedán,2011,2015,8400.00,10
+RAD016,Radiador Mazda 3,Radiador mejorado,Mazda,3,Sedán,2016,2022,9900.00,7
+RAD017,Radiador Volkswagen Jetta,Radiador aluminio,Volkswagen,Jetta,Sedán,2010,2014,8500.00,9
+RAD018,Radiador Volkswagen Jetta,Radiador premium,Volkswagen,Jetta,Sedán,2015,2020,10200.00,6
+RAD019,Radiador Mitsubishi Lancer,Radiador estándar,Mitsubishi,Lancer,Sedán,2011,2015,7900.00,11
+RAD020,Radiador Mitsubishi Lancer,Radiador reforzado,Mitsubishi,Lancer,Sedán,2016,2020,9300.00,8
+RAD021,Radiador Subaru Impreza,Radiador aluminio,Subaru,Impreza,Sedán,2012,2017,9700.00,5
+RAD022,Radiador Suzuki Swift,Radiador estándar,Suzuki,Swift,Hatchback,2011,2016,7200.00,14
+RAD023,Radiador Suzuki Swift,Radiador premium,Suzuki,Swift,Hatchback,2017,2022,8500.00,10
+RAD024,Radiador Renault Logan,Radiador económico,Renault,Logan,Sedán,2012,2018,6900.00,16
+RAD025,Radiador Peugeot 208,Radiador original,Peugeot,208,Hatchback,2016,2022,9100.00,9
