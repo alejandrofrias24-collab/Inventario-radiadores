@@ -1,4 +1,4 @@
-import { AppError } from '../../../domain/errors/app-error.js';
+import { AppError } from '../../api/src/domain/errors/app-error.js';
 
 const asyncHandler = (handler) => (req, res, next) => {
   Promise.resolve(handler(req, res, next)).catch(next);

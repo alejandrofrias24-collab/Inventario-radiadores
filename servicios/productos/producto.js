@@ -1,4 +1,4 @@
-import { AppError } from '../errors/app-error.js';
+import { AppError } from '../../api/src/domain/errors/app-error.js';
 
 const currentYear = new Date().getFullYear();
 

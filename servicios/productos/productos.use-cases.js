@@ -1,5 +1,5 @@
 import { Producto } from '../../domain/entities/producto.js';
-import { AppError } from '../../domain/errors/app-error.js';
+import { AppError } from '../../api/src/domain/errors/app-error.js';
 
 export class CrearProducto {
   constructor(repository) { this.repository = repository; }

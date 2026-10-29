@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { AppError } from '../../../domain/errors/app-error.js';
+import { AppError } from '../../../../api/src/domain/errors/app-error.js';
 
 export function authMiddleware(req, _res, next) {
   const [scheme, token] = (req.headers.authorization ?? '').split(' ');
