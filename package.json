@@ -1,0 +1,8 @@
+{
+  "name": "mi-proyecto-microservicios",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "npm --prefix api test && npm --prefix servicios/auth test && npm --prefix frontend test"
+  }
+}

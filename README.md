@@ -1,10 +1,37 @@
 # Gestión de inventario de radiadores
 
+El proyecto corre como microservicios independientes:
 
-- **Dominio:** define la entidad `Producto`, sus reglas de validación y el contrato del repositorio, sin depender de Express ni de SQL Server.
-- **Aplicación:** reúne los casos de uso para crear, listar, consultar, actualizar y eliminar productos.
-- **Infraestructura:** implementa el repositorio con Sequelize/SQL Server y conecta los controladores y rutas HTTP con los casos de uso.
-- Esta separación permite cambiar la base de datos o la forma de exponer la API sin reescribir las reglas del negocio.
-- Los controladores traducen solicitudes y respuestas HTTP; el dominio conserva las reglas para que puedan aplicarse de forma consistente.
-- Autenticación, historial y otros módulos auxiliares usan una estructura MVC más directa porque no requieren el mismo nivel de aislamiento.
-- El frontend React consume la API y administra sus datos remotos con React Query, manteniendo la interfaz separada del acceso a la base de datos.
+- `servicios/auth`: registro, login y emisión de JWT; guarda sus usuarios en la base `mi_proyecto_auth` y publica `usuario.creado` en RabbitMQ.
+- `api`: servicio de negocio de radiadores; consulta la colección `radiadores` de la base indicada en `MONGODB_URI`.
+- `gateway`: única entrada HTTP del frontend; enruta `/api/auth/*` y `/api/productos/*` al servicio correspondiente.
+- `frontend`: aplicación React servida por Nginx; las llamadas `/api` pasan por el Gateway.
+
+Las bases de datos se aíslan por servicio: autenticación usa su base SQL Server `mi_proyecto_auth` y productos usa su propia base MongoDB. Ninguno consulta la base del otro.
+
+## Levantar todo
+
+Desde la raíz, copia `.env.example` a `.env`, configura `MONGODB_URI` con la conexión Atlas usada por Compass y cambia las contraseñas de desarrollo. Después ejecuta:
+
+```sh
+docker compose up --build
+```
+
+Abre el frontend en `http://localhost:8080`; el Gateway queda disponible en `http://localhost:3100`. MongoDB y RabbitMQ también publican sus puertos en `127.0.0.1` para permitir desarrollo local desde Node. SQL Server se publica en `127.0.0.1:11433` para conectarse desde SSMS sin ocupar el puerto local `1433`.
+
+El primer arranque crea la base y tabla de autenticación. Para mostrar los datos de Atlas, copia el URI de conexión que usa Compass a `MONGODB_URI` en el `.env` de la raíz del proyecto. El URI debe incluir la base mostrada en Compass; la API consulta la colección `radiadores` y adapta `vehiculo_compatible`, `ano_desde`, `ano_hasta` y `precio_dop` al formato de la web. Mantén ese URI privado y no lo subas al repositorio.
+
+### Desarrollo del frontend con Vite
+
+Si quieres usar el servidor de desarrollo de Vite (puerto `5173`), primero deja arriba las dependencias y servicios backend desde la raíz:
+
+```sh
+docker compose up -d --build sqlserver mongodb rabbitmq auth productos gateway
+npm --prefix frontend run dev
+```
+
+Vite reenvía `/api` al Gateway en `127.0.0.1:3100`. Puedes cambiar ese destino con `VITE_GATEWAY_URL`.
+
+
+
+

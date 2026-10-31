@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import { Producto } from '../../../../domain/entities/producto.js';
 import { ProductoRepository } from '../../../../domain/repositories/producto.repository.js';
-import { ProductoModel } from '../models/producto.model.js';
+import { ProductoModel } from '../../api/src/infrastructure/database/sql-server/models/producto.model.js';
 
 function toEntity(row) {
   if (!row) return null;

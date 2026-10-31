@@ -1,11 +1,9 @@
 import '../../../config/env.js';
 import mongoose from 'mongoose';
 
-const uri = process.env.MONGODB_URI;
-
-if (!uri) {
-  throw new Error('Falta la variable de entorno MONGODB_URI.');
-}
+// En ejecución local, conecta con MongoDB instalado en el equipo. Docker Compose
+// proporciona su propia URI y la reemplaza por la conexión interna del contenedor.
+const uri = process.env.MONGODB_URI || 'mongodb://admin:Mongo_Dev_2026!@127.0.0.1:27017/invetario_db?authSource=admin';
 
 export async function connectMongoDB() {
   await mongoose.connect(uri, {

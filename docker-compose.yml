@@ -1,0 +1,115 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${SQL_PASSWORD:-TuContraseñaSegura123!}
+      MSSQL_PID: Developer
+    ports: ["127.0.0.1:11433:1433"]
+    volumes: ["sqlserver_auth_data:/var/opt/mssql"]
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -C -Q \"SELECT 1\" >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 35s
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:8
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-Mongo_Dev_2026!}
+    ports: ["127.0.0.1:27017:27017"]
+    volumes: ["mongodb_productos_data:/data/db"]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--username", "${MONGO_ROOT_USERNAME:-admin}", "--password", "${MONGO_ROOT_PASSWORD:-Mongo_Dev_2026!}", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-app}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-app-dev-password}
+    ports: ["127.0.0.1:5672:5672", "127.0.0.1:15672:15672"]
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+    volumes: ["rabbitmq_data:/var/lib/rabbitmq"]
+    restart: unless-stopped
+
+  auth:
+    build: ./servicios/auth
+    environment:
+      PORT: 3001
+      AUTH_SQL_DATABASE: mi_proyecto_auth
+      SQL_SERVER: sqlserver
+      SQL_PORT: 1433
+      SQL_USER: sa
+      SQL_PASSWORD: ${SQL_PASSWORD:-TuContraseñaSegura123!}
+      JWT_SECRET: ${JWT_SECRET:-local-development-secret-change-this-to-a-long-random-value-2026}
+      JWT_EXPIRES_IN: 2h
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-app}:${RABBITMQ_PASSWORD:-app-dev-password}@rabbitmq:5672
+    depends_on:
+      sqlserver: { condition: service_healthy }
+      rabbitmq: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 180s
+    restart: unless-stopped
+
+  productos:
+    build: ./api
+    environment:
+      PORT: 3002
+      JWT_SECRET: ${JWT_SECRET:-local-development-secret-change-this-to-a-long-random-value-2026}
+      MONGODB_URI: ${MONGODB_URI:-mongodb://${MONGO_ROOT_USERNAME:-admin}:${MONGO_ROOT_PASSWORD:-Mongo_Dev_2026!}@mongodb:27017/${MONGO_DATABASE:-invetario_db}?authSource=admin}
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-app}:${RABBITMQ_PASSWORD:-app-dev-password}@rabbitmq:5672
+    depends_on:
+      mongodb: { condition: service_healthy }
+      rabbitmq: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3002/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  gateway:
+    build: ./gateway
+    environment:
+      PORT: 3000
+      AUTH_SERVICE_URL: http://auth:3001
+      BUSINESS_SERVICE_URL: http://productos:3002
+    ports: ["127.0.0.1:3100:3000"]
+    depends_on:
+      auth: { condition: service_healthy }
+      productos: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports: ["8080:80"]
+    depends_on:
+      gateway: { condition: service_healthy }
+    restart: unless-stopped
+
+volumes:
+  sqlserver_auth_data:
+  mongodb_productos_data:
+  rabbitmq_data:
